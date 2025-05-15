@@ -142,6 +142,21 @@ nav{
 
 
 
+.form-group{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.left-container{
+  width: 60%;
+}
+.right.image{
+  width: 35%;
+}
+.right.image img{
+  max-width: 100%;
+  height: auto;
+}
 
 
 
