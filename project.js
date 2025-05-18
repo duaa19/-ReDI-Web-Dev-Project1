@@ -1,4 +1,4 @@
-document.getElementById("searchButton").addEventListener("click", function() {
+document.getElementById("searchButton").addEventListener("click", function () {
   const area = document.getElementById("area").value;
   const grade = document.getElementById("grade").value;
   const subject = document.getElementById("subject").value;
@@ -7,65 +7,79 @@ document.getElementById("searchButton").addEventListener("click", function() {
   const resultsDiv = document.getElementById("results");
   resultsDiv.innerHTML = ""; // تصفير النتائج السابقة
 
-  // تحقق من أن كل الحقول ممتلئة
   if (!area || !grade || !subject || !type) {
-    resultsDiv.innerHTML = "<p style='color: red;'>Please fill in all fields to search.</p>";
+    resultsDiv.innerHTML = "<p style='color: red;'>Bitte füllen Sie alle Felder aus.</p>";
     return;
   }
 
-  // أمثلة على المعلمين (يمكنك تغييرهم لاحقًا أو جلبهم من قاعدة بيانات)
-  const teachers = [
-    { name: "Herr Müller", subject: "Mathematik", city: "Berlin", type: "online" , grade: "10. klasse" },
-    { name: "Frau Schmidt", subject: "Deutsch", city: "Hamburg", type: "vor Ort" , grade: "10. klasse"},
-    { name: "Herr Weber", subject: "Physik", city: "Köln", type: "online", grade: "10. klasse" },
-    { name: "Frau Becker", subject: "Chemie", city: "München", type: "vor Ort",grade: "10. klasse" },
+  const cities = ["Berlin", "München", "Hamburg", "Köln", "Frankfurt", "Stuttgart", "Düsseldorf", "Leipzig"];
+  const grades = [
+    "1. Klasse", "2. Klasse", "3. Klasse", "4. Klasse", "5. Klasse", "6. Klasse",
+    "7. Klasse", "8. Klasse", "9. Klasse", "10. Klasse", "11. Klasse", "12. Klasse"
   ];
+  const subjects = ["Mathematik", "Deutsch", "Physik", "Chemie", "Biologie", "Geschichte"];
+  const types = ["online", "vor Ort"];
+  const times = ["vormittags", "nachmittags", "abends", "am Wochenende", "flexible Zeit"];
+  const lastNames = ["Müller", "Schmidt", "Weber", "Schneider", "Fischer", "Koch", "Richter", "Wolf", "Bauer", "Becker"];
 
-  // فلترة حسب الاختيارات
+  const teachers = [];
+  for (let i = 0; i < 10000; i++) {
+    const name = `${Math.random() > 0.5 ? "Herr" : "Frau"} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
+    const city = cities[Math.floor(Math.random() * cities.length)];
+    const gradeVal = grades[Math.floor(Math.random() * grades.length)];
+    const subjectVal = subjects[Math.floor(Math.random() * subjects.length)];
+    const typeVal = types[Math.floor(Math.random() * types.length)];
+    const time = times[Math.floor(Math.random() * times.length)];
+    const phone = `0151-${Math.floor(1000000 + Math.random() * 9000000)}`;
+    const experience = Math.floor(Math.random() * 21) + 1; // بين 1 و 21 سنة
+
+    teachers.push({
+      name,
+      city,
+      grade: gradeVal,
+      subject: subjectVal,
+      type: typeVal,
+      time,
+      phone,
+      experience
+    });
+  }
+
   const filteredTeachers = teachers.filter(teacher =>
     teacher.city === area &&
+    teacher.grade === grade &&
     teacher.subject === subject &&
-    teacher.type === type &&
-    teacher.grade.toLowerCase() === grade.toLowerCase()
-
+    teacher.type === type
   );
 
   if (filteredTeachers.length === 0) {
-    resultsDiv.innerHTML = "<p style='color: darkblue;'>No teachers found matching your criteria.</p>";
+    resultsDiv.innerHTML = "<p style='color: darkblue;'>Keine passenden Lehrer gefunden.</p>";
     return;
   }
 
-  // عرض النتائج باستخدام div مع كلاس "teacher"
   filteredTeachers.forEach(teacher => {
     const teacherDiv = document.createElement("div");
     teacherDiv.className = "teacher";
-    teacherDiv.textContent = teacher.name ;
- // أضفناه للنتائج في الصفحة
+    teacherDiv.textContent = teacher.name;
 
-  // عنصر لعرض التفاصيل عند الضغط
-  const detailsDiv = document.createElement("div");
-  detailsDiv.className = "teacher-details";
-  detailsDiv.style.display = "none"; // نخفيه في البداية
+    const detailsDiv = document.createElement("div");
+    detailsDiv.className = "teacher-details";
+    detailsDiv.style.display = "none";
+    detailsDiv.innerHTML = `
+      <p><strong>Fach:</strong> ${teacher.subject}</p>
+      <p><strong>Stadt:</strong> ${teacher.city}</p>
+      <p><strong>Klasse:</strong> ${teacher.grade}</p>
+      <p><strong>Typ:</strong> ${teacher.type}</p>
+      <p><strong>Zeit:</strong> ${teacher.time}</p>
+      <p><strong>Telefon:</strong> ${teacher.phone}</p>
+      <p><strong>Erfahrung:</strong> ${teacher.experience} Jahre</p>
+    `;
 
-  // النص الذي يحتوي على التفاصيل
-  const detailsTeacher = document.createElement("div");
-  detailsTeacher.className = "teacher-details";
+    teacherDiv.addEventListener("click", () => {
+      detailsDiv.style.display = detailsDiv.style.display === "none" ? "block" : "none";
+    });
 
-   detailsDiv.innerHTML = `
-  
-    <p><strong><Subject:</strong> ${teacher.subject}</p>
-    <p><strong>City:</strong> ${teacher.city}</p>
-    <p><strong>Grade:</strong> ${teacher.grade}</p>
-    <p><strong>Type:</strong> ${teacher.type}</p>
-  `;
-
-  // عند الضغط على اسم المعلم، نعرض أو نخفي التفاصيل
-  teacherDiv.addEventListener("click", () => {
-    detailsDiv.style.display = detailsDiv.style.display === "none" ? "block" : "none";
+    resultsDiv.appendChild(teacherDiv);
+    resultsDiv.appendChild(detailsDiv);
   });
-
-  // نضيف العناصر إلى نتائج الصفحة
-  resultsDiv.appendChild(teacherDiv);
-  resultsDiv.appendChild(detailsDiv);
 });
-  });
